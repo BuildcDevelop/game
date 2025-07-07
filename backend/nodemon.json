@@ -1,5 +1,7 @@
 {
-  "exec": "node --import ts-node/register ./src/app.ts",
+  "watch": ["src"],
   "ext": "ts,json",
-  "watch": ["src"]
+  "execMap": {
+    "ts": "tsc --noEmit && node --no-warnings=ExperimentalWarning --loader ts-node/esm/transpile-only"
+  }
 }
