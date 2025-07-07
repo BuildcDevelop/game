@@ -1,21 +1,13 @@
-// backend/src/controllers/auth.controller.ts
-import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { AuthService } from '../services/auth.service';
-
-export const registerUser = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
-  const existing = AuthService.findUser(username);
-  if (existing) return res.status(400).json({ message: 'Uživatel existuje' });
-
-  const hashed = await bcrypt.hash(password, 10);
-  const newUser = AuthService.createUser(username, hashed);
-  return res.status(201).json({ message: 'Registrován', user: newUser });
-};
+import { validateLoginInput } from '../utils/validate';
 
 export const loginUser = async (req: Request, res: Response) => {
   const { username, password } = req.body;
+
+  const validationErrors = validateLoginInput(username, password);
+  if (validationErrors.length > 0) {
+    return res.status(400).json({ message: 'Chybná data', errors: validationErrors });
+  }
+
   const user = AuthService.findUser(username);
   if (!user) return res.status(404).json({ message: 'Uživatel nenalezen' });
 
