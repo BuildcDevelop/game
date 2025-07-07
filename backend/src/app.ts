@@ -23,12 +23,10 @@ app.use(morgan('dev'));
 
 app.use('/api/auth', authRoutes);
 
-app.get('/health', (_req, res) => {
-  res.json({
-    status: 'OK',
-    timestamp: new Date().toISOString()
-  });
-});
+app.get('/', (req, res) => {
+  res.send('Game API is running!');
+}); 
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
