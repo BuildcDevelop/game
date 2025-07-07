@@ -1,5 +1,5 @@
 {
-     "exec": "node --loader ts-node/esm ./src/app.ts",
-     "ext": "ts,json",
-     "watch": ["src"]
-   }
+  "exec": "node --import ts-node/register ./src/app.ts",
+  "ext": "ts,json",
+  "watch": ["src"]
+}
