@@ -1,16 +1,24 @@
-// backend/src/app.ts
+// backend/app.ts
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import morgan from 'morgan';
 import dotenv from 'dotenv';
-import authRoutes from './routes/auth.routes';
 import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import authRoutes from './src/routes/auth.routes.js'; // přidej .js při importu ES modulem
 
-dotenv.config({ path: path.join(__dirname, '../.env') });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(helmet());
+app.use(morgan('dev'));
 
 app.use('/api/auth', authRoutes);
 

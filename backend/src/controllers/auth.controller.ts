@@ -1,4 +1,7 @@
 import { validateLoginInput } from '../utils/validate';
+import authRoutes from './src/routes/auth.routes.js';
+import { Request, Response } from 'express';
+import { AuthService } from '../services/auth.service';
 
 export const loginUser = async (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -21,3 +24,20 @@ export const loginUser = async (req: Request, res: Response) => {
   );
   return res.status(200).json({ message: 'Přihlášen', token });
 };
+
+export const registerUser = async (req: Request, res: Response) => {
+  const { username, password } = req.body;
+
+  const validationErrors = validateLoginInput(username, password);
+  if (validationErrors.length > 0) {
+    return res.status(400).json({ message: 'Chybná data', errors: validationErrors });
+  }
+
+  const existingUser = AuthService.findUser(username);
+  if (existingUser) return res.status(409).json({ message: 'Uživatel již existuje' });
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const newUser = AuthService.createUser(username, hashedPassword);
+
+  return res.status(201).json({ message: 'Uživatel vytvořen', user: { id: newUser.id, username: newUser.username } });
+}
